@@ -1,6 +1,7 @@
 module OpenBrain.CSV where
 
 import Control.Monad
+import Control.Applicative
 import Control.Monad.Trans
 import Data.List
 import qualified Data.Csv as CSV
@@ -26,6 +27,12 @@ instance (CSV.ToNamedRecord a, CSV.ToNamedRecord b) => CSV.ToNamedRecord (a,b) w
 instance (CSV.ToNamedRecord a, CSV.ToNamedRecord b, CSV.ToNamedRecord c) => CSV.ToNamedRecord (a,b,c) where
   toNamedRecord (x,y,z) = HM.union (CSV.toNamedRecord x) $ HM.union (CSV.toNamedRecord y) (CSV.toNamedRecord z)
 
-allHeaders :: CSV.ToNamedRecord a => a -> CSV.Header
-allHeaders x = V.fromList $ HM.keys $ CSV.toNamedRecord x 
+instance (CSV.FromNamedRecord a, CSV.FromNamedRecord b) => CSV.FromNamedRecord (a,b) where
+  parseNamedRecord nr = (,) <$> CSV.parseNamedRecord nr <*> CSV.parseNamedRecord nr
 
+instance (CSV.FromNamedRecord a, CSV.FromNamedRecord b, CSV.FromNamedRecord c) => CSV.FromNamedRecord (a,b,c) where
+  parseNamedRecord nr = (,,) <$> CSV.parseNamedRecord nr <*> CSV.parseNamedRecord nr <*> CSV.parseNamedRecord nr
+
+
+allHeaders :: CSV.ToNamedRecord a => a -> CSV.Header
+allHeaders x = V.fromList $ HM.keys $ CSV.toNamedRecord x
