@@ -21,3 +21,6 @@ Library
       , mtl
       , vector
       , unordered-containers
+      , time
+      , old-locale
+      , text

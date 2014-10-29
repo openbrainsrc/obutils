@@ -10,6 +10,12 @@ import qualified Data.ByteString as B
 import qualified Data.Vector as V
 import qualified Data.HashMap.Strict as HM
 
+import qualified Data.Text.Encoding as DTE
+import qualified Data.Text as T
+import Data.Time
+import Data.Time.Format (formatTime, parseTime)
+import System.Locale (defaultTimeLocale)
+import Data.String
 
 csvPrintLine :: MonadIO m => [String] -> m ()
 csvPrintLine cells = liftIO $ putStrLn $ intercalate "," cells
@@ -36,3 +42,9 @@ instance (CSV.FromNamedRecord a, CSV.FromNamedRecord b, CSV.FromNamedRecord c) =
 
 allHeaders :: CSV.ToNamedRecord a => a -> CSV.Header
 allHeaders x = V.fromList $ HM.keys $ CSV.toNamedRecord x
+
+newtype IsoDate = IsoDate { unIsoDate :: UTCTime } deriving (Show, Eq, Ord)
+
+instance CSV.ToField IsoDate where
+  toField (IsoDate tm) = 
+      fromString $ formatTime defaultTimeLocale "%FT%T%QZ" tm
