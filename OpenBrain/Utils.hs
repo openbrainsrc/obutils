@@ -28,6 +28,7 @@ takeUntil c = takeWhile (/=c)
 onFst f (x,y) = (f x, y)
 onSnd f (x,y) = (x, f y)
 
+notNull :: (Foldable t) => t a -> Bool
 notNull = not . null
 
 uncap [] = []

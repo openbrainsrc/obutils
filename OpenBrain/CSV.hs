@@ -12,9 +12,8 @@ import qualified Data.HashMap.Strict as HM
 
 import qualified Data.Text.Encoding as DTE
 import qualified Data.Text as T
-import Data.Time
+import Data.Time     
 import Data.Time.Format (formatTime, parseTime)
-import System.Locale (defaultTimeLocale)
 import Data.String
 
 csvPrintLine :: MonadIO m => [String] -> m ()
